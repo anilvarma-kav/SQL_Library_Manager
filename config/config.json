@@ -1,0 +1,15 @@
+{
+  "development": {
+    "dialect": "sqlite",
+    "storage": "library.db"
+  },
+  "test": {
+    "dialect": "mysql",
+    "storage": "libraryTest.db"
+
+  },
+  "production": {
+    "dialect": "mysql",
+    "storage": "libraryLive.db"
+  }
+}
