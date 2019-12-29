@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Book = require('../models').Book;
+var createError = require('http-errors');
 const Sequelize =  require('sequelize');
 /* Handler function to wrap each route. */
 function asyncHandler(cb){
@@ -63,18 +64,49 @@ router.post('/', asyncHandler(async (req, res) => {
     }
 
 }));
+router.get('/search', asyncHandler(async (req, res) => {
+    const {term} = req.query;
+    const Op = Sequelize.Op;
+    const books = await Book.findAll(
+        {
+            where: {
+                [Op.or]: {
+                    title: {
+                        [Op.like]: '%' + term + '%'
+                    },
+                    author: {
+                        [Op.like]: '%' + term + '%'
+                    },
+                    genre: {
+                        [Op.like]: '%' + term + '%'
+                    },
+                    year: {
+                        [Op.like]: '%' + term + '%'
+                    }
+                }
+            }
+        }
+    );
+    console.log(books, term);
+    if(books.length > 0) {
+        res.render("books/index", {books, title: "Search results for: " + term});
+    }
+    else{
+        res.render("books/index", {books, title: "Sorry, there are no books matching your search: " + term});
+    }
+}));
 /* Get book details. */
-router.get("/:id/details", asyncHandler(async(req, res) => {
+router.get("/:id", asyncHandler(async(req, res, next) => {
     const book = await Book.findByPk(req.params.id);
     if(book) {
         res.render("books/details", { book, title: "Update Book" });
     } else {
-        res.render("error");
+        next(createError(404));
     }
 }));
 
 /* POST Update book details */
-router.post('/:id/update', asyncHandler(async (req, res) => {
+router.post('/:id', asyncHandler(async (req, res) => {
     let book;
     try{
         book = await Book.findByPk(req.params.id);
@@ -112,35 +144,5 @@ router.post('/:id/delete', asyncHandler(async (req, res) => {
 
 // Search feature
 
-router.get('/search', asyncHandler(async (req, res) => {
-    const {term} = req.query;
-    const Op = Sequelize.Op;
-    const books = await Book.findAll(
-        {
-            where: {
-                [Op.or]: {
-                    title: {
-                        [Op.like]: '%' + term + '%'
-                    },
-                    author: {
-                        [Op.like]: '%' + term + '%'
-                    },
-                    genre: {
-                        [Op.like]: '%' + term + '%'
-                    },
-                    year: {
-                        [Op.like]: '%' + term + '%'
-                    }
-                }
-            }
-        }
-    );
-    console.log(books, term);
-    if(books.length > 0) {
-        res.render("books/index", {books, title: "Search results for: " + term});
-    }
-    else{
-        res.render("books/index", {books, title: "Sorry, there are no books matching your search: " + term});
-    }
-}));
+
 module.exports = router;
