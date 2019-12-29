@@ -15,10 +15,11 @@ function asyncHandler(cb){
 /* GET books listing. */
 router.get('/', asyncHandler(async (req, res) => {
     const Allbooks = await Book.findAll();
-    const pages = Math.floor(Allbooks.length/5)+1;
+    const pages = Math.ceil(Allbooks.length/5);
     console.log(pages);
     const books = await Book.findAll(
         {
+            order: [['updatedAt', 'DESC']],
             limit: 5
         }
     );
@@ -27,17 +28,18 @@ router.get('/', asyncHandler(async (req, res) => {
 
 // For pagination
 router.get('/page/:page', asyncHandler(async (req, res) => {
-    const page = req.params.page;
-
+    const page = parseInt(req.params.page);
     const Allbooks = await Book.findAll();
-    const pages = Math.floor(Allbooks.length/5)+1;
-    console.log(pages);
+    const pages = Math.ceil(Allbooks.length/5);
+    console.log(page);
     const books = await Book.findAll(
         {
+            order: [['updatedAt', 'DESC']],
+            offset: 5 * (page-1),
             limit: 5
         }
     );
-    res.render("books/index", {books, title: "Books", pages, active: 1});
+    res.render("books/index", {books, title: "Books", pages, active: page});
 }));
 /* GET books listing. */
 router.get('/newbook',  (req, res) => {

@@ -27,14 +27,15 @@ block content
                     td=book.year
 
     - var n =0;
-    .pagination
-        a(href='#') &laquo;
-        while n < pages
-            - var link = n+1;
-            if link === active
-                a.active(href='/books/page/'+ link)=++n
+    if pages
+        .pagination
+            a(href='#') &laquo;
+            while n < pages
+                - var link = n+1;
+                if link === active
+                    a.active(href='/books')=++n
 
-            else
-                a(href='/books/page/'+ link)=++n
-        a(href='#') &raquo;
+                else
+                    a(href='/books/page/'+ link)=++n
+            a(href='#') &raquo;
 
