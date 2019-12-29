@@ -25,7 +25,7 @@ a.button, input[type=submit] {
 }
 
 form a.button, input[type=submit] {
-  margin-left: 140px;
+  margin-left: 0px;
   transition: 0.4s;
 }
 
@@ -94,4 +94,22 @@ input[type=text] {
 
 .error {
   color: rgb(236, 15, 15);
+}
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  font-weight:bold;
+  font-size:20px;
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+.pagination a.active {
+  background-color:#009900;
+}
+.pagination a:hover:not(.active) {
+  background-color: #d4d5d2;
 }

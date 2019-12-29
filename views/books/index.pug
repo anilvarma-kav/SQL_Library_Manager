@@ -5,6 +5,11 @@ block content
         h1=title
     p
         a.button(href='/books/newbook') Create New Book
+    p
+        a.button(href='/books/') Home
+    form(action='/books/search')
+        input(type='text' name="term" placeholder='Search..' required)
+        input(type='submit' value='Search Books')
     table
         thead
             tr
@@ -14,9 +19,22 @@ block content
                 th Year
         tbody
             each book in books
-               tr
+                tr
                     td
-                        a(href="/books/"+book.id+"/details")=book.title
+                        a(href="/books/" + book.id + "/details")=book.title
                     td=book.author
                     td=book.genre
                     td=book.year
+
+    - var n =0;
+    .pagination
+        a(href='#') &laquo;
+        while n < pages
+            - var link = n+1;
+            if link === active
+                a.active(href='/books/page/'+ link)=++n
+
+            else
+                a(href='/books/page/'+ link)=++n
+        a(href='#') &raquo;
+
