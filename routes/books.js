@@ -43,23 +43,23 @@ router.get('/page/:page', asyncHandler(async (req, res) => {
     res.render("books/index", {books, title: "Books", pages, active: page});
 }));
 /* GET books listing. */
-router.get('/newbook',  (req, res) => {
+router.get('/new',  (req, res) => {
     res.render("books/newBook", {title: "New Book"});
 });
 
 /* POST create book. */
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/new', asyncHandler(async (req, res) => {
     let book;
     try{
         book = await Book.create(req.body);
         res.redirect("/books/");
     }
-    catch (e) {
-        if(e.name === "SequelizeValidationError") {
+    catch (err) {
+        if(err.name === "SequelizeValidationError") {
             book = await Book.build(req.body);
-            res.render("books/newBook", { book, errors: e.errors, title: "New Book" })
+            res.render("books/newBook", { book, errors: err.errors, title: "New Book" })
         } else {
-            throw e;
+            throw err;
         }
     }
 
